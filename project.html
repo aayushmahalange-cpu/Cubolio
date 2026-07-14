@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedcubing Dashboard</title>
+    <!-- You can add a CSS file link here or use the separate CSS file -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Add Google Font here -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="logo.png">
+                <span class="logo-text">Cubolio.</span>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-item active">
+                <span class="icon-placeholder"></span> Timer
+            </div>
+            <div class="nav-item">
+                <span class="icon-placeholder"></span> Sessions
+            </div>
+            <div class="nav-item">
+                <span class="icon-placeholder"></span> Statistics
+            </div>
+            <div class="nav-item">
+                <span class="icon-placeholder"></span> Analytics
+            </div>
+            <div class="nav-item">
+                <span class="icon-placeholder"></span> Compare
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Practice</div>
+            <div class="nav-item">
+                <span class="icon-placeholder"></span> Drills <span class="badge-new">NEW</span>
+            </div>
+            <div class="nav-item">
+                <span class="icon-placeholder"></span> Trainer
+            </div>
+            <div class="nav-item">
+                <span class="icon-placeholder"></span> Solve Library
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="footer-icon">⚙</div>
+            <div class="footer-icon">?</div>
+            <div class="footer-icon">☾</div>
+            <div class="footer-icon">🎧</div>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <button class="menu-btn">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </button>
+            
+            <button class="top-selector">3x3 <span>▼</span></button>
+            <button class="top-selector">WCA</button>
+            
+            <div class="search-bar">
+                <span class="search-icon"></span>
+                <input type="text" class="search-input" placeholder="Search anything...">
+            </div>
+            
+            <button class="top-action action-glowing">
+                <span></span> 12 Day Streak
+            </button>
+            <button class="top-action">
+                <span></span> Notifications
+            </button>
+            <div class="user-avatar"></div>
+        </header>
+
+        <!-- Scrollable Dashboard Area -->
+        <div class="dashboard-scroll">
+            
+            <!-- Top Grid (Timer, Session, Cube) -->
+            <div class="dashboard-grid">
+                
+                <!-- Timer Area -->
+                <div class="timer-section">
+                    <div class="scramble-display scramble-text">
+                        Scramble Generating...
+                    </div>
+                    
+                    <div class="timer-display-box">
+                        <div class="timer-title">TIMER</div>
+                        <h1 class="timer-time" id="timer-display"><span id="sec-part">0</span><span class="dot">.</span><span id="centi-part">00</span></h1>
+                        <div class="timer-hint">Press SPACEBAR to start</div>
+                    </div>
+                    
+                    <div class="timer-controls">
+                        <button class="btn-outline">INSPECTION</button>
+                        <button class="btn-primary action-gradient" id="startbtn">START / SPACE</button>
+                        <button class="btn-outline" id="focusbtn">FOUCS-MODE</button>
+                    </div>
+                    
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-label">Best Single</div>
+                            <div class="stat-value">0.64</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Ao5</div>
+                            <div class="stat-value" id="ao5-display">--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Ao12</div>
+                            <div class="stat-value"  id="ao12-display" >--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Solves Today</div>
+                            <div class="stat-value" id="solves">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session Area -->
+                <div class="session-section">
+                    <div class="panel" style="margin-bottom: 20px;">
+                        <div class="panel-header">
+                            <div class="panel-title">CURRENT SESSION</div>
+                            <a href="#" class="link-text">View All</a>
+                        </div>
+                        <div class="session-picker">
+                                <div class="session-field">
+                                    <input
+                                        id="session-name-input"
+                                        class="session-input"
+                                        autocomplete="off"
+                                        spellcheck="false">
+
+                                    <button
+                                        id="session-dropdown-btn"
+                                        class="session-dropdown-btn"
+                                        type="button">
+                                        <svg class="session-arrow" width="18" height="18" viewBox="0 0 24 24">
+                                            <path
+                                                d="M7 10L12 15L17 10"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div id="session-menu" class="session-menu"></div>
+                            </div>
+                        <div class="session-stats">
+                            <div class="session-stat-item">
+                                <span class="stat-label" >Solves</span>
+                                <span class="session-stat-val" id="session-solves-count">0</span>
+                            </div>
+                            <div class="session-stat-item">
+                                <span class="stat-label">Best</span>
+                                <span class="session-stat-val" id="session-best">0.64</span>
+                            </div>
+                            <div class="session-stat-item">
+                                <span class="stat-label">Ao5</span>
+                                <span class="session-stat-val" id="session-ao5">--</span>
+                            </div>
+                            <div class="session-stat-item">
+                                <span class="stat-label">Ao12</span>
+                                <span class="session-stat-val" id="session-ao12">1.21</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">RECENT SOLVES</div>
+                        </div>
+                        <div class="history-wrapper">
+                            <table class="solves-table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Ao5</th>
+                                        <th>+/-</th>
+                                        <th>Ao12</th>
+                                        <th>Penalty</th>
+                                        <th>Time Ago</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="history-list">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="text-align: center; margin-top: 10px;">
+                            <a href="#" class="link-text">View All Solves →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cube Preview Area -->
+                <div class="cube-section">
+                    <div class="panel" style="margin-bottom: 20px;">
+                        <div class="panel-header">
+                            <div class="panel-title">CUBE PREVIEW</div>
+                        </div>
+                        <div class="cube-preview-box">
+                            <!-- 3D Cube placeholder -->
+                            <div class="cube-mock"></div>
+                        </div>
+                        <div class="cube-controls">
+                            <button class="cube-control-btn">Rotate</button>
+                            <button class="cube-control-btn">Reset</button>
+                            <button class="cube-control-btn">Hide</button>
+                            <button class="cube-control-btn">Copy</button>
+                        </div>
+                        <button class="btn-outline btn-full">Copy Scramble</button>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">QUICK ACTIONS</div>
+                        </div>
+                        <div class="quick-action-grid">
+                            <button class="btn-outline" id="btn-new-session">New Session</button>
+                            <button class="btn-outline">Import Solves</button>
+                            <button class="btn-outline">Export Data</button>
+                            <button class="btn-outline">Generate Scramble</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Dashboard Section -->
+            <div class="panel middle-section">
+                <div class="panel-header">
+                    <div class="panel-title">PERFORMANCE DASHBOARD</div>
+                </div>
+                <div class="performance-grid">
+                    <div class="perf-box">
+                        <div class="stat-label">Total Solves</div>
+                        <div class="stat-value">352</div>
+                        <div class="stat-change positive"> 18.0%</div>
+                    </div>
+                    <div class="perf-box">
+                        <div class="stat-label">Practice Time</div>
+                        <div class="stat-value">5h 42m</div>
+                        <div class="stat-change positive"> 24.1%</div>
+                    </div>
+                    <div class="perf-box">
+                        <div class="stat-label">Best Time</div>
+                        <div class="stat-value">0.64</div>
+                        <div class="stat-change">3x3 Single</div>
+                    </div>
+                    <div class="perf-box">
+                        <div class="stat-label">Ao5</div>
+                        <div class="stat-value">0.82</div>
+                        <div class="stat-change">Best Ao5</div>
+                    </div>
+                    <div class="perf-box">
+                        <div class="stat-label">Ao12</div>
+                        <div class="stat-value">1.21</div>
+                        <div class="stat-change">Best Ao12</div>
+                    </div>
+                    <div class="perf-box">
+                        <div class="stat-label">Streak</div>
+                        <div class="stat-value">12 days</div>
+                        <div class="stat-change">Best: 27 days</div>
+                    </div>
+                </div>
+            </div>
+
+          
+                        <!-- Charts Row (Fixed sizes) -->
+            <div class="hero-grid">
+
+                <div class="performance-card animated-border">
+                    <section class="progress-section">
+                            <!-- Progress Chart -->
+                            
+                                <div class="chart-header">
+                                    <span class="panel-title">PROGRESS OVER TIME</span>
+                                    <select class="chart-select"><option>Ao5</option></select>
+                                </div>
+
+                                <div class="chart-area">
+                                    <canvas id="progressChart"></canvas>
+                                </div>
+                            
+                    </section>
+
+                    <section class="pb-section">
+                            <!-- Personal Best Timeline -->
+                    
+                            <div class="chart-header">
+                                
+                                <span class="panel-title">PERSONAL BEST TIMELINE</span>
+                                <select class="chart-select"><option>3x3 Single</option></select>
+                            </div>
+                            <div class="chart-area">
+                                <canvas id="pbTime"></canvas>
+                            </div>
+                        
+                    </section>   
+                </div>
+                
+                <!-- Activity Heatmap -->
+                <div class="chart-panel heatmap-card">
+                    <div class="chart-header">
+                        <span class="panel-title">ACTIVITY HEATMAP</span>
+                        <select id="heatmapRange" class="chart-select">
+                            <option value="3">3 Months</option>
+                            <option value="6">6 Months</option>
+                            <option value="12">1 Year</option>
+                        </select>
+                    </div>
+                    
+                    <div class="heatmap-stats">
+                        <div>
+                            <span class="heat-value" id="practiceDays">0</span>
+                            <span class="heat-label">Practice Days</span>
+                        </div>
+
+                        <div>
+                            <span class="heat-value" id="currentStreak">0</span>
+                            <span class="heat-label">Current Streak</span>
+                        </div>
+                    </div>
+                    <div class="heatmap-wrapper">
+                        
+                        <div class="weekday-labels">
+                            <span>M</span>
+                            <span>T</span>
+                            <span>W</span>
+                            <span>T</span>
+                            <span>F</span>
+                            <span>S</span>
+                            <span>S</span>
+                        </div>
+
+                       
+                        <div class="month-sidebar">
+                                <div class="dot"></div>
+                                <div class="line"></div>
+                                <div class="month-label"></div>
+                                <div class="line"></div>
+                                <div class="dot"></div>
+                            </div>
+                        <div id="heatmapGrid" class="heatmap-grid">
+                            
+                        </div>
+                         
+                    </div>
+                  <div class="heatmap-legend">
+                        <span>Less</span>
+                        <div class="legend-cell" style="background:#171C32"></div>
+                        <div class="legend-cell" style="background:#25154B"></div>
+                        <div class="legend-cell" style="background:#43208C"></div>
+                        <div class="legend-cell" style="background:#6A2CF5"></div>
+                        <div class="legend-cell" style="background:#8E42FF"></div>
+                        <div class="legend-cell" style="background:#B15CFF"></div>
+                        <span>More</span>
+                    </div>  
+                </div>
+
+            </div>   
+
+            <div class="middle-grid">
+                    <!-- Stability Gauge -->
+                <div class="chart-panel stability-card ">
+                    <div class="chart-header">
+                        <span class="panel-title">STABILITY SCORE</span>
+                    </div>
+                    <div class="chart-area-gauge">
+                        <canvas id="stabilityGauge"></canvas>
+                    </div>
+                </div>
+
+                    <!-- Improvement Velocity -->
+                <div class="chart-panel velocity-card">
+                    <div class="chart-header">
+                        <span class="panel-title">IMPROVEMENT VELOCITY</span>
+                    </div>
+
+                    <div class="chart-area velocity-area">
+                        <div class="velocity-info">  
+                            <h2>-0.42s</h2>
+                            <p>vs last 30 days</p>
+                        </div>
+                        <div class="velocity-chart">
+                            <canvas id="velocityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            
+                    <!-- Sub-X Success Rate -->
+                <div class="chart-panel subx-card">
+                    <div class="chart-header">
+                        <span class="panel-title">SUB-X SUCCESS RATE</span>
+                        <select class="chart-select">
+                            <option>Sub-15</option>
+                            <option>Sub-20</option>
+                            <option>Sub-30</option>
+                        </select>
+                    </div>
+                    <div class="chart-area gauge-chart">
+                        <canvas id="sub-x"></canvas>
+                        <div class="subx-rank">
+                            🏆 Top 27% of users
+                        </div>
+                    </div>
+                </div>
+                    <!-- Practice Allocation -->
+                <div class="chart-panel practice-card">
+                    <div class="chart-header">
+                        <span class="panel-title">PRACTICE ALLOCATION</span>
+                        <select class="chart-select">
+                            <option>By Solves</option>
+                            <option>By Time</option>
+                        </select>
+                    </div>
+                    <div class="chart-area">
+                        <canvas id="practiceAllocation"></canvas>
+                    </div>
+                </div>
+            </div>
+
+           <!-- Bottom Grid -->
+            <div class="bottom-grid">
+                 <!-- Solve Distribution -->
+                <div class="chart-panel distribution-card">
+                    <div class="chart-header">
+                        <span class="panel-title">SOLVE DISTRIBUTION</span>
+                    </div>
+                    <div class="chart-area">
+                        <canvas id="solveDistribution"></canvas>
+                    </div>
+                </div>
+                
+                 <!-- PB Probability -->
+                <div class="chart-panel probability-card">
+                    <div class="chart-header"> 
+                        <span class="panel-title">PB PROBABILITY</span>
+                        <select class="chart-select">
+                            <option>3x3 Single</option>
+                            <option>Ao5</option>
+                            <option>Ao12</option>
+                        </select>   
+                    </div>
+                    <div class="chart-area probability-chart">
+                        <div class="probability-info">
+                            <h2>42%</h2>
+                            <p>Probability of new PB<br>in next 100 solves</p>
+                        </div>
+                        <div class="prob_chart">
+                            <canvas id="pbProbability"></canvas>
+                        </div>
+                        
+                    </div>
+                </div>
+                  
+            </div>
+        </div>
+    </main>  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
