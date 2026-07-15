@@ -1789,3 +1789,12 @@ body.focus-mode .bottom-grid{
         background-position:300% 50%;
     }
 }
+.better{
+    color:#00E676;
+    font-weight:600;
+}
+
+.worse{
+    color:#FF5C7A;
+    font-weight:600;
+}

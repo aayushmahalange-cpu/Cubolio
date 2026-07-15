@@ -7,11 +7,7 @@
     const solvesTodayDisplay = document.querySelector("#solves");
     const scrambleText = document.querySelector(".scramble-text");
 
-    // session panel
-    const selector = document.getElementById("session-selector");
-    const btn = document.getElementById("session-dropdown-btn");
-
-    btn.onclick = () => selector.click();
+   
     const sessionMean = document.querySelector("#session-mean");
     const sessionBest = document.querySelector("#session-best");
     const sessionSolvesCount = document.querySelector("#session-solves-count");
@@ -37,7 +33,8 @@
     let activeSessionId = null;
     let sessionSolves = [];           // solves of the active session (sorted newest first)
     
-
+    const importBtn = document.getElementById("btn-import");
+    const exportBtn = document.getElementById("btn-export");
 
 // CHARTS - Enhanced with Cubolio theme colors
 // ROW 1
@@ -61,7 +58,7 @@ gradientVel.addColorStop(1,"#B8FF6A");
 const styles = getComputedStyle(document.documentElement);
 const electricBlue = styles.getPropertyValue('--electric-blue').trim() || '#2763fb';
 const neonCyan = styles.getPropertyValue('--neon-cyan').trim() || '#27D8FF';
-const softPink = styles.getPropertyValue('--soft-Pink').trim() || "#C026FF";
+const softpink = styles.getPropertyValue('--soft-pink').trim() || "#C026FF";
 const accentPurple = styles.getPropertyValue('--accent-purple').trim() || '#A24CFF';
 const textMuted = styles.getPropertyValue('--text-muted').trim() || '#8A8C9E';
 
@@ -75,7 +72,7 @@ gradient.addColorStop(1, `rgba(123, 93, 255, 0)`);
 const lineGradient = ctx.createLinearGradient(0, 0, 0, 150);
 lineGradient.addColorStop(0, neonCyan);
 lineGradient.addColorStop(0.5, electricBlue);
-lineGradient.addColorStop(1, softPink);
+lineGradient.addColorStop(1, softpink);
 
 // Glow effect for points
 const glowGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 15);
@@ -199,25 +196,9 @@ let velocity_Chart=new Chart(velocityChart,{
     type:"line",
    // plugins:[neonLine],
     data:{
-        labels:[1,2,3,4,5,6,7,8,9,10],
+        labels:[],
         datasets:[{
-            data:[
-                    18,
-                    17.7,
-                    17.3,
-                    17.1,
-                    16.8,
-                    16.9,
-                    16.4,
-                    16.1,
-                    15.8,
-                    15.7,
-                    15.3,
-                    15.1,
-                    14.9,
-                    14.6,
-                    14.4
-                    ],
+            data:[],
             borderColor:gradientVel,
             fill:true,
             backgroundColor:areaGradient,
@@ -250,21 +231,14 @@ let solve_Distribution = new Chart(solveDistribution, {
     type: "bar",
     plugins: [neonGlow,valueLabels],
     data: {
-        labels: [
-            "0-10s",
-            "10-12s",
-            "12-14s",
-            "14-16s",
-            "16-20s",
-            "20s+"
-        ],
+        labels: [],
 
         datasets: [{
-            data: [5, 12, 28, 30, 18, 7],
+            data: [],
             backgroundColor: gradientbar,
             borderColor: "#24004a",
             borderWidth: 1.2,
-            borderRadius: 9,
+           
             borderSkipped: false,
              barPercentage: 0.80,
             categoryPercentage: 0.60,
@@ -376,21 +350,9 @@ let Prog_chart = new Chart(progressChart, {
     type: "line",
     plugins:[horizontalGuideLines],
     data: {
-            labels: [
-            "May 1", "May 4", "May 7", "May 10", "May 13",
-            "May 16", "May 19", "May 22", "May 25", "May 28",
-            "Jun 1", "Jun 4", "Jun 7", "Jun 10", "Jun 13",
-            "Jun 16", "Jun 19", "Jun 22", "Jun 25", "Jun 28",
-            "Jul 1"
-            ],
+            labels: [],
         datasets: [{
-           data: [
-                    10.8, 10.2, 9.6, 8.2, 7.4,
-                    8.1, 8.8, 7.3, 6.9, 5.1,
-                    5.8, 6.3, 5.0, 3.2, 3.8,
-                    4.2, 3.1, 2.4, 1.3, 1.6,
-                    0.8
-                    ],
+           data: [],
                     tension: 0.15,
             backgroundColor: gradient,
             fill: true,
@@ -527,21 +489,39 @@ gradient_gauge.addColorStop(1,"#17e8b4");
 const centerText={
     id:"centerText",
     afterDraw(chart){
+        const stats = chart.stats;
+        if (!stats) return;
         const {ctx}=chart;
-        const meta = chart.getDatasetMeta(0).data[0];
+        const dataset = chart.getDatasetMeta(0);
+        if(!dataset.data.length){
+            return;
+        }
+        const meta = dataset.data[0];
         const x = meta.x;
         const y = meta.y;
         ctx.save();
         ctx.textAlign="center";
         ctx.fillStyle="#FFFFFF";
         ctx.font="600 50px 'Inter'";
-        ctx.fillText("92",x,y+10);
+        ctx.fillText(Math.round(stats.stability),x,y+10);
         ctx.font="16px Inter";
         ctx.fillStyle="rgba(255,255,255,.6)";
         ctx.fillText("/100",x,y+35);
+
+        let label="Poor";
+        if(stats.stability>=85){
+            label="Excellent";
+        }
+        else if(stats.stability>=70){
+            label="Good";
+        }
+        else if(stats.stability>=50){
+            label="Average";
+        }
+
         ctx.font="600 16px Inter";
         ctx.fillStyle="#44c7ff";
-        ctx.fillText("Excellent",x,y+60);
+        ctx.fillText(label,x,y+60);
         ctx.restore();
     }
 }
@@ -550,7 +530,7 @@ let stability_Gauge=new Chart(stabilityGauge,{
     
     data:{
         datasets:[{
-            data:[92,8],
+            data:[],
            backgroundColor:[
                 gradient_gauge,
                 "rgba(255,255,255,.06)"
@@ -609,18 +589,12 @@ gradientPB.addColorStop(1, "#7B61FF");
 // ==================== Chart ====================
 let PB_Time = new Chart(PBTime, {
     type: "line",
+    plugins:[horizontalGuideLines],
     data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        plugins:[horizontalGuideLines],
+        labels: [],
+        
         datasets: [{
-            data: [
-                    18.24,
-                    17.34,
-                    16.91,
-                    16.12,
-                    15.34,
-                    14.98
-                    ],
+            data: [],
             stepped:true,
             borderColor: gradientPB,
             
@@ -801,19 +775,9 @@ let Practice_Allocation=new Chart(practiceAllocation,{
         easing:"easeOutQuart"
     },
     data:{
-        labels:[
-            "3x3",
-            "OH",
-            "2x2",
-            "Pyraminx",
-            "Skewb"
-        ],
+        labels:[],
         datasets:[{ 
-            data:[58,
-                18,
-                12,
-                7,
-                5],
+            data:[],
        
         backgroundColor:gradientPractice,
           //  backgroundColor: gradientbar,
@@ -911,11 +875,14 @@ const neonBell={
 const pbMarker={
     id:"pbMarker",
     afterDatasetsDraw(chart){
+        const stats = chart.stats;
+        if(!stats) return;
         const {ctx,scales}=chart;
-        const x=scales.x.getPixelForValue("15.0");
-        const y=scales.y.getPixelForValue(
-            Math.max(...bell)
-        );
+        const pb=stats.bestSingle;
+        if (pb == null) return;
+        const x=scales.x.getPixelForValue(pb);
+        const peak=Math.max(...stats.bellCurve.map(x=>x.y));
+        const y=scales.y.getPixelForValue(peak);
         ctx.save();
         // dashed line
         ctx.strokeStyle="rgba(255,79,216,.45)";
@@ -986,22 +953,22 @@ const gradientArea=ctx6.createLinearGradient(0,0,0,180);
 gradientArea.addColorStop(0,"rgba(255,79,216,.30)");
 gradientArea.addColorStop(.5,"rgba(196,77,255,.12)");
 gradientArea.addColorStop(1,"rgba(196,77,255,0)");
-const bellLabels=[];
-const bell=[];
-for(let x=12; x<=18; x+=0.1){
-    bellLabels.push(x.toFixed(1));
-    const y = Math.exp(
-        -Math.pow(x-15,2)/(2*1.15*1.15)
-    );
-    bell.push(y);
-}
+// const bellLabels=[];
+// const bell=[];
+// for(let x=12; x<=18; x+=0.1){
+//     bellLabels.push(x.toFixed(1));
+//     const y = Math.exp(
+//         -Math.pow(x-15,2)/(2*1.15*1.15)
+//     );
+//     bell.push(y);
+// }
 let PB_BellCurve=new Chart(pbProbability,{
     type:"line",
     plugins:[neonBell,guideLines,pbMarker],
     data:{
-        labels:bellLabels,
+        labels:[],
         datasets:[{
-            data:bell,
+            data:[],
             borderColor:gradientPBLine,
             backgroundColor:gradientArea,
             fill:true,
@@ -1083,22 +1050,29 @@ const gaugeGlow = {
 const centerText2 = {
     id:"centerText2",
     afterDraw(chart){
-        const {ctx} = chart;
+         const stats = chart.stats;
+        if(!stats) return;
+
         const meta = chart.getDatasetMeta(0).data[0];
+        if(!meta) return;
+
         const x = meta.x;
         const y = meta.y;
+
+        const {ctx} = chart;
+     
         ctx.save();
         ctx.textAlign = "center";
         // Percentage
         ctx.fillStyle = "#FFFFFF";
         ctx.font = "700 45px Inter";
-        ctx.fillText("84",x-10,y+10);
+        ctx.fillText(Math.round(stats.subXSuccess),x-10,y+10);
         // Fraction
         ctx.font = "700 30px Inter";
         ctx.fillText("%",x+32,y+8);
         ctx.font = "600 12px Inter";
         ctx.fillStyle = "rgba(255,255,255,.92)";
-        ctx.fillText("126 / 150",x,y+33);
+        ctx.fillText(stats.validCount+"/"+stats.solveCount,x,y+33);
         // Label
         ctx.font = "600 12px Inter";
         ctx.fillStyle = "rgb(255, 185, 33)";
@@ -1112,7 +1086,7 @@ let subxGauge = new Chart(subX,{
     plugins:[centerText2 ],
     data:{
         datasets:[{
-            data:[84,16],
+            data:[],
             backgroundColor:[
                 gradientGauge2,
                 "rgba(255,255,255,.08)"
@@ -1147,6 +1121,68 @@ let subxGauge = new Chart(subX,{
         }
     }
 });
+
+function updateCharts(){
+    const stats=calculateStats(sessionSolves);
+    const effectiveTimes=sessionSolves.map(getEffectiveTime);
+
+    const progress=getProgressData(effectiveTimes,12);
+    if(progress){
+        Prog_chart.data.labels=progress.map(x=>x.x);
+        Prog_chart.data.datasets[0].data=progress.map(x=>x.y/1000);
+    }else{
+        Prog_chart.data.labels=[];
+        Prog_chart.data.datasets[0].data=[];
+    }
+    Prog_chart.update();
+
+    const pb=getPBData(effectiveTimes);
+    if(pb){
+        PB_Time.data.labels=pb.map(x=>x.x);
+        PB_Time.data.datasets[0].data=pb.map(x=>x.y/1000);
+    }else{
+        PB_Time.data.labels=[];
+        PB_Time.data.datasets[0].data=[];
+    }
+    PB_Time.update();
+
+    const dist=getSolveDistribution(effectiveTimes);
+    if (dist) {
+        solve_Distribution.data.labels = dist.map(x => x.x);
+        solve_Distribution.data.datasets[0].data = dist.map(x => x.y);
+    }else{
+         solve_Distribution.data.labels = [];
+        solve_Distribution.data.datasets[0].data = [];
+    }
+    solve_Distribution.update();
+
+    stability_Gauge.stats = stats;
+    const stability = stats.stability ?? 0;
+    stability_Gauge.data.datasets[0].data=[stability,100-stability];
+    stability_Gauge.update();
+
+    const vel=getProgressData(effectiveTimes,20);
+    if(vel){
+        velocity_Chart.data.labels=vel.map(x=>x.x);
+        velocity_Chart.data.datasets[0].data=vel.map(x=>x.y/1000);
+    }else{
+         velocity_Chart.data.labels=[];
+        velocity_Chart.data.datasets[0].data=[];
+    }
+    velocity_Chart.update();
+    
+    const bell = generateBellCurve(stats.mean,stats.stdDev)||[];
+
+    PB_BellCurve.stats = stats;
+    PB_BellCurve.data.labels=bell.map(x=>x.x.toFixed(2));
+    PB_BellCurve.data.datasets[0].data=bell.map(x=>x.y);
+    PB_BellCurve.update();
+
+    subxGauge.stats = stats;
+    const sub = stats.subXSuccess ?? 0;
+    subxGauge.data.datasets[0].data=[sub,100-sub];
+    subxGauge.update();
+}
     // ============================================================
     // 3. Scramble (cubing.net)
     // ============================================================
@@ -1160,7 +1196,22 @@ let subxGauge = new Chart(subX,{
             if (scrambleText) scrambleText.innerText = "R U R' U'";
         }
     }
+     function getEffectiveTime(solve) {
+            if (!solve) return Infinity;
+            if (solve.penalty === "DNF") return Infinity;
+            if (solve.penalty === "+2") return solve.time + 2000;
+            return solve.time;
+    }
+     function calculateWindowAoN(window,n){
+                const dnfCount = window.filter(x => x === Infinity).length;
+                if(dnfCount>=2)return Infinity;
+                const sorted = [...window].sort((a, b) => a - b);
+                const trimmed = sorted.slice(1, n - 1);
+                const sum = trimmed.reduce((acc, t) => acc + t, 0);
+                const avg = sum / (n - 2);
 
+                return avg;
+        };
     function calculateStats(solves){
         const stats={
                 solveCount:0,
@@ -1189,17 +1240,13 @@ let subxGauge = new Chart(subX,{
                 currentStreak:0,
                 longestStreak:0,
                 pbProbability:null,
+                bellCurve:null,
                 subXSuccess:null
             
         };
         if(solves.length===0)return stats;
     
-         function getEffectiveTime(solve) {
-            if (!solve) return Infinity;
-            if (solve.penalty === "DNF") return Infinity;
-            if (solve.penalty === "+2") return solve.time + 2000;
-            return solve.time;
-        }
+        
         const effectiveTimes=[];
         solves.forEach((solve)=>{
             const effectiveTime=getEffectiveTime(solve);
@@ -1240,22 +1287,13 @@ let subxGauge = new Chart(subX,{
         stats.ao5=calculateCurrentAoN(effectiveTimes, 5);
         stats.ao12=calculateCurrentAoN(effectiveTimes, 12);
         stats.ao100=calculateCurrentAoN(effectiveTimes, 100);
-        function calcAoN(window){
-                const dnfCount = window.filter(x => x === Infinity).length;
-                if(dnfCount>=2)return Infinity;
-                const sorted = [...window].sort((a, b) => a - b);
-                const trimmed = sorted.slice(1, n - 1);
-                const sum = trimmed.reduce((acc, t) => acc + t, 0);
-                const avg = sum / (n - 2);
-
-                return avg;
-        };
+       
         function calculateBestAoN(effectiveTimes,n){
             if(effectiveTimes.length<n)return null;
             let best_aoN=Infinity;
             for(let i=0;i<=effectiveTimes.length-n;i++){
                 let window=effectiveTimes.slice(i,n+i);
-                const aoN=calcAoN(window);
+                const aoN=calculateWindowAoN(window,n);
                     if(best_aoN>aoN){
                         best_aoN=aoN;
                     }
@@ -1303,6 +1341,7 @@ let subxGauge = new Chart(subX,{
         stats.currentStreak=getCurrentStreak(map);
         stats.longestStreak=getLongestStreak(map);
         stats.pbProbability=getPBProbability(stats.bestSingle,stats.mean,stats.stdDev);
+        stats.bellCurve=generateBellCurve(stats.mean,stats.stdDev);
         stats.subXSuccess=getSubXSuccessRate(effectiveTimes,10000);
         return stats;
     }
@@ -1312,7 +1351,7 @@ let subxGauge = new Chart(subX,{
         let data=[];
         for(let i=0;i<=effectiveTimes.length-n;i++){
             let window=effectiveTimes.slice(i,i+n);
-            const aoN=calcAoN(window);
+            const aoN=calculateWindowAoN(window, n);
             data.push({
                 x:i+n,
                 y: aoN === Infinity ? null : aoN,
@@ -1339,6 +1378,7 @@ let subxGauge = new Chart(subX,{
     function getSolveDistribution(effectiveTimes){
         let valid=effectiveTimes.filter(x=>x!=null && x!=Infinity);
         if(valid.length===0)return null;
+        valid=valid.map(x=>x/1000);
         let min=Math.min(...valid);
         let max=Math.max(...valid);
         let mean=valid.reduce((a,b)=>a+b,0)/valid.length;
@@ -1554,7 +1594,7 @@ let subxGauge = new Chart(subX,{
             
         }
 
-       renderHeatmap(sessionSolves); // July
+      
 
         function stabilityScore(mean,stdDev){
             if(mean==null || stdDev==null)return null;
@@ -1562,10 +1602,7 @@ let subxGauge = new Chart(subX,{
             let score=100-cv*100;
             return Math.max(0,Math.min(100,score));
         }
-        stats.stabilityScore = stabilityScore(
-            stats.mean,
-            stats.stdDev
-        );
+        
         function improvementVelocity(solves){
             let effectiveTimes=[];
              solves.forEach((solve)=>{
@@ -1621,6 +1658,26 @@ let subxGauge = new Chart(subX,{
                 return 100;
             }
             return jStat.normal.cdf(bestSingle,mean,stdDev)*100;
+        }
+        function generateBellCurve(mean,stdDev){
+              if(mean==null || stdDev==null)return[];
+            mean/=1000;
+            stdDev/=1000;
+          
+            if(stdDev ===0)return [];
+            let data=[];
+            let start=mean-4*stdDev;
+            let end=mean+4*stdDev;
+            let points=100;
+            let step=(end-start)/points;
+            for(let i=0;i<=points;i++){
+                let x=start+i*step;
+                data.push({
+                    x:x,
+                    y:jStat.normal.pdf(x,mean,stdDev)
+                })
+            }
+            return data;
         }
     // ============================================================
     // 4. Local storage
@@ -1685,13 +1742,6 @@ let subxGauge = new Chart(subX,{
         return `${min}:${String(sec).padStart(2, "0")}.${String(centi).padStart(2, "0")}`;
     }
 
-    function getEffectiveTime(solve) {
-        if (!solve) return Infinity;
-        if (solve.penalty === "DNF") return Infinity;
-        if (solve.penalty === "+2") return solve.time + 2000;
-        return solve.time;
-    }
-
     function calcAoN(solves, n) {
         if (solves.length < n) return "--";
         const times = solves.slice(0, n).map(s => getEffectiveTime(s));
@@ -1718,6 +1768,7 @@ let subxGauge = new Chart(subX,{
         // session panel
         updateSessionStats();
         updateHistoryUI();
+        updateCharts();  
          renderHeatmap(sessionSolves); 
     }
 
@@ -1732,12 +1783,13 @@ let subxGauge = new Chart(subX,{
             const best = Math.min(...solves.map(s => s.time));
             if (sessionBest) sessionBest.innerText = formatTime(best);
             if (sessionAo5) sessionAo5.innerText = calculateAo5(solves);
+            if (sessionAo12)sessionAo12.innerText = calculateAo12(solves);
         } else {
             if (sessionSolvesCount) sessionSolvesCount.innerText = "0";
             if (sessionMean) sessionMean.innerText = "--";
             if (sessionBest) sessionBest.innerText = "--";
             if (sessionAo5) sessionAo5.innerText = "--";
-            if (sessionAo12)sessionAo12.innerText = calculateAo12(solves);
+            if (sessionAo12)sessionAo12.innerText = "--";
         }
     }
 
@@ -1788,10 +1840,28 @@ let subxGauge = new Chart(subX,{
         else
             ago = Math.floor(diff / 3600) + "h ago";
 
+        let delta = "--";
+        let deltaClass = "";
+        const current=getEffectiveTime(solve);
+
+        if (index < solves.length - 1) {
+            let previous = getEffectiveTime(solves[index + 1]);
+
+            if (Number.isFinite(current) && Number.isFinite(previous)) {
+                const deltaValue = (current - previous) / 1000;
+
+                delta =
+                    (deltaValue> 0 ? "+" : "") +
+                    deltaValue.toFixed(2);
+                deltaClass = deltaValue < 0 ? "better" : "worse";
+            }
+        }
+    
+        
         tr.innerHTML = `
             <td class="solve-time">${timeText}</td>
             <td>${ao5}</td>
-            <td>--</td>
+            <td class="${deltaClass}">${delta}</td>
             <td>${ao12}</td>
             <td>${penalty}</td>
             <td>${ago}</td>
@@ -1889,11 +1959,20 @@ let subxGauge = new Chart(subX,{
     // ============================================================
     // 8. Timer Logic (keyboard)
     // ============================================================
-    //let startbtn=document.querySelector("#startbtn");
-   const focus = document.querySelector("#focusbtn");        
-   focus.addEventListener("click", function () {
-            document.body.classList.toggle("focus-mode");
-    }); 
+let isFocusMode=false;    
+const focusBtn = document.querySelector("#focusbtn");
+
+function toggleFocusMode() {
+    isFocusMode = !isFocusMode;
+    document.body.classList.toggle("focus-mode", isFocusMode);
+}
+  
+focusBtn.addEventListener("click", toggleFocusMode);   
+document.addEventListener("keydown", function(e) {
+    if (e.code === "KeyF") {
+        toggleFocusMode();
+    }
+}); 
 
     document.addEventListener("keydown", function (e) {
         if (e.target.tagName === "INPUT") return;
@@ -1902,7 +1981,7 @@ let subxGauge = new Chart(subX,{
             if (timerState === "inspecting") {
                 timerState = "ready";
                 if (timerEl) timerEl.className = "timer-time state-ready";
-                if(!focus){
+                if(!isFocusMode){
                     document.body.classList.add('focus-mode');
                 } 
             }
@@ -1943,7 +2022,7 @@ document.addEventListener("keydown", function(e) {
                 timerState = "inspecting";
                 inspectionTime = 0;
                 timerEl.className = "timer-time state-inspecting";
-                if(!focus)document.body.classList.add('focus-mode');
+                if(!isFocusMode)document.body.classList.add('focus-mode');
                 updateTimerUI(0);
 
                 // start inspection countdown (15s)
@@ -1958,6 +2037,16 @@ document.addEventListener("keydown", function(e) {
                         if (centiPart) centiPart.innerText = "";
                         if (dotPart) dotPart.style.display = "none";
                         timerEl.className = "timer-time state-dnf";
+                                const newSolve = {
+                                    id: Date.now(),
+                                    time: 0,
+                                    penalty: "DNF",
+                                };
+                                sessionSolves.unshift(newSolve);
+                                saveData();
+                                refreshDashboard();
+                                timerState="idle";
+                                timerEl.className = "timer-time ";
                         // reset state after a moment? keep as inspecting but show DNF
                     } else {
                         updateTimerUI(inspectionTime * 1000);
@@ -1991,7 +2080,7 @@ document.addEventListener("keydown", function(e) {
                 clearInterval(intervalId);
                 intervalId = null;
                 timerState = "idle";
-                document.body.classList.remove('focus-mode');
+                document.body.classList.toggle("focus-mode", isFocusMode);
                 timerEl.className = "timer-time";
 
                 // save solve
@@ -2047,29 +2136,11 @@ document.addEventListener("keydown", function(e) {
                 if (active) {
                     active.name = this.value || "Unnamed";
                     saveData();
-                    updateSessionDropdown();
+                    renderSessionMenu();
                 }
             });
         }
 
-        // Switch session
-        const selector = document.querySelector("#session-selector");
-        if (selector) {
-            selector.addEventListener("change", function () {
-                activeSessionId = this.value;
-                const active = allSessions.find(s => s.id === activeSessionId);
-                if (active) {
-                    sessionSolves = active.solves;
-                    saveData();
-                    refreshDashboard();
-                    renderSessionMenu();
-                    generateScramble();
-                    // update name input
-                    const nameInput2 = document.querySelector("#session-name-input");
-                    if (nameInput2) nameInput2.value = active.name || "";
-                }
-            });
-        }
 
         // Load data and init
         loadData();
@@ -2101,24 +2172,17 @@ document.addEventListener("keydown", function(e) {
 
     console.log("✅ Speedcubing Dashboard JS loaded (with timer, localStorage, stats)");
 const menu=document.getElementById("session-menu");
-
 const arrow=document.querySelector(".session-arrow");
-
 document
 .getElementById("session-dropdown-btn")
 .onclick=(e)=>{
-
     e.stopPropagation();
-
     menu.classList.toggle("open");
-
     arrow.classList.toggle("rotate");
 };
 
 document.addEventListener("click",()=>{
-
     menu.classList.remove("open");
-
     arrow.classList.remove("rotate");
 
 });
@@ -2129,3 +2193,42 @@ document.addEventListener("keydown",function(e){
         document.body.classList.toggle("focus-mode");
     }
 })
+
+
+// NEW FEATURES IMPORT EXPORT
+// exportBtn.addEventListener("click", () => {
+//     const data = JSON.stringify(allSessions, null, 2);
+//     const blob = new Blob([data], {
+//         type: "application/json"
+//     });
+//     const url = URL.createObjectURL(blob);
+//     const a = document.createElement("a");
+//     a.href = url;
+//     a.download = "cubolio-data.json";
+//     a.click();
+//     URL.revokeObjectURL(url);
+// });
+
+// const fileInput = document.createElement("input");
+// fileInput.type = "file";
+// fileInput.accept = ".json";
+// importBtn.addEventListener("click", () => {
+//     fileInput.click();
+// });
+// fileInput.addEventListener("change", e => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+//     const reader = new FileReader();
+//     reader.onload = function () {
+//         try {
+//             allSessions = JSON.parse(reader.result);
+//             saveData();
+//             loadData();
+//             refreshDashboard();
+//         }
+//         catch {
+//             alert("Invalid Cubolio backup.");
+//         }
+//     };
+//     reader.readAsText(file);
+// });
